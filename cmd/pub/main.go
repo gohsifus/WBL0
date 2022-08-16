@@ -4,6 +4,7 @@ package main
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/nats-io/stan.go"
 	"io/ioutil"
 	"log"
@@ -15,7 +16,7 @@ import (
 
 //getOriginalData вернет данные json из задания
 func getOriginalData() ([]byte, error) {
-	file, err := os.Open("data.json")
+	file, err := os.Open("./cmd/pub/store/model.json")
 	if err != nil {
 		return []byte{}, err
 	}
@@ -50,11 +51,15 @@ func main() {
 
 	for i := 1; ; i++ {
 		data, err := getDataForPub()
-		if err != nil{
+		if err != nil {
 			log.Fatalln(err)
 		}
 
-		sc.Publish("orders", data)
+		err = sc.Publish("orders", data)
+		if err != nil{
+			fmt.Println("err " + err.Error())
+		}
+		fmt.Println(i)
 		time.Sleep(time.Second * 3)
 	}
 }

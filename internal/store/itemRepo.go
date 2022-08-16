@@ -6,8 +6,8 @@ type ItemRepo struct{
 	store *Store
 }
 
-func (i ItemRepo) Create(m *models.Item) (*models.Item, error){
-	sql := "insert into items (chrt_id, track_number, price, rid, name, sale , size, total_price, nm_id, brand, status, order_id) values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)"
+func (i *ItemRepo) Create(m *models.Item) (*models.Item, error){
+	sql := "insert into items (chrt_id, track_number, price, rid, name, sale , size, total_price, nm_id, brand, status, order_id) values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING id"
 	err := i.store.db.QueryRow(
 		sql,
 		m.ChrtId,

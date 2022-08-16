@@ -1,11 +1,15 @@
 package natsSubscriber
 
-type Config struct{
+type Config struct {
 	ChannelName string `json:"channel_name"`
-	ClusterId string `json:"cluster_id"`
-	ClientId string `json:"client_id"`
+	ClusterId   string `json:"cluster_id"`
+	ClientId    string `json:"client_id"`
 }
 
-func NewConfig() *Config{
-	return &Config{}
+func NewConfig() *Config {
+	return &Config{
+		ChannelName: "orders",
+		ClusterId:   "test-cluster",
+		ClientId:    "test-client",
+	}
 }

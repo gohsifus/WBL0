@@ -8,8 +8,8 @@ type PaymentRepo struct{
 	store *Store
 }
 
-func (p PaymentRepo) Create(m *models.Payment) (*models.Payment, error){
-	sql := "insert into payments (transaction, request_id, currency, provider, amount, payment_dt, bank, delivery_cost, goods_total, custom_fee) values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)"
+func (p *PaymentRepo) Create(m *models.Payment) (*models.Payment, error){
+	sql := "insert into payments (transaction, request_id, currency, provider, amount, payment_dt, bank, delivery_cost, goods_total, custom_fee) values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING id"
 	err := p.store.db.QueryRow(
 		sql,
 		m.Transaction,
