@@ -6,6 +6,7 @@ import (
 	"natTest/pkg/models"
 )
 
+//Store структура для работы с бд
 type Store struct {
 	config       *Config
 	db           *sql.DB
@@ -38,6 +39,7 @@ func (s *Store) Open() error {
 	return nil
 }
 
+//Close закроет подключение к бд
 func (s *Store) Close() {
 	s.db.Close()
 }

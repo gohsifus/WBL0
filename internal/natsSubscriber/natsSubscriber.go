@@ -37,7 +37,7 @@ func (n *NatsSubscriber) GetDataFromChannel(channelName string) (<-chan models.O
 		recOrder := models.Order{}
 		err := json.Unmarshal(m.Data, &recOrder)
 		if err != nil {
-			//Игнорируем данные если это не json
+			//Игнорируем некорректные данные
 			n.logger.Info("ignore:" + err.Error())
 		} else {
 			out <- recOrder

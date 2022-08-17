@@ -41,7 +41,7 @@ func getDataForPub() ([]byte, error) {
 	return []byte{}, errors.New("неожиданное поведение")
 }
 
-//Для публикации данных в канал
+//Публикация данных в канал
 func main() {
 	sc, err := stan.Connect("test-cluster", "client-pub")
 	defer sc.Close()
@@ -56,7 +56,7 @@ func main() {
 		}
 
 		err = sc.Publish("orders", data)
-		if err != nil{
+		if err != nil {
 			fmt.Println("err " + err.Error())
 		}
 		fmt.Println(i)

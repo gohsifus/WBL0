@@ -4,12 +4,12 @@ import (
 	"natTest/pkg/models"
 )
 
-//Тут методы для работы с бд сущности order
-
+//OrderRepo структура для работы с сущностью order из бд
 type OrderRepo struct {
 	store *Store
 }
 
+//Create создаст запись в бд
 func (o *OrderRepo) Create(m *models.Order) (*models.Order, error) {
 	sql := `insert into orders (
 				order_uid, 
@@ -52,10 +52,11 @@ func (o *OrderRepo) Create(m *models.Order) (*models.Order, error) {
 	return m, nil
 }
 
-func (o *OrderRepo) GetList() ([]models.Order, error){
+//GetList вернет все заявки из бд
+func (o *OrderRepo) GetList() ([]models.Order, error) {
 	orders := []models.Order{}
 	order := models.Order{
-		Payment: &models.Payment{},
+		Payment:  &models.Payment{},
 		Delivery: &models.Delivery{},
 	}
 
@@ -63,11 +64,11 @@ func (o *OrderRepo) GetList() ([]models.Order, error){
 
 	rows, err := o.store.db.Query(sql)
 	defer rows.Close()
-	if err != nil{
+	if err != nil {
 		return nil, err
 	}
 
-	for rows.Next(){
+	for rows.Next() {
 		err := rows.Scan(
 			&order.Id,
 			&order.OrderUid,
@@ -85,20 +86,20 @@ func (o *OrderRepo) GetList() ([]models.Order, error){
 			&order.OofShard,
 		)
 
-		if err != nil{
+		if err != nil {
 			return nil, err
 		}
 
 		//Получаем платежи
-		if order.Payment, err = o.store.GetPaymentRepo().GetById(order.Payment.Id); err != nil{
+		if order.Payment, err = o.store.GetPaymentRepo().GetById(order.Payment.Id); err != nil {
 			return nil, err
 		}
 		//Получаем доставку
-		if order.Delivery, err = o.store.GetDeliveryRepo().GetById(order.Delivery.Id); err != nil{
+		if order.Delivery, err = o.store.GetDeliveryRepo().GetById(order.Delivery.Id); err != nil {
 			return nil, err
 		}
 		//Получаем позиции(items)
-		if order.Items, err = o.store.GetItemRepo().GetByOrderId(order.Id); err != nil{
+		if order.Items, err = o.store.GetItemRepo().GetByOrderId(order.Id); err != nil {
 			return nil, err
 		}
 

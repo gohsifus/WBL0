@@ -2,10 +2,12 @@ package store
 
 import "natTest/pkg/models"
 
+//ItemRepo структура для работы с сущностью item из бд
 type ItemRepo struct {
 	store *Store
 }
 
+//Create создаст запись в бд
 func (i *ItemRepo) Create(m *models.Item) (*models.Item, error) {
 	sql := "insert into items (chrt_id, track_number, price, rid, name, sale , size, total_price, nm_id, brand, status, order_id) values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING id"
 	err := i.store.db.QueryRow(
@@ -31,12 +33,14 @@ func (i *ItemRepo) Create(m *models.Item) (*models.Item, error) {
 	return m, nil
 }
 
+//GetByOrderId вернет все записи по id заявки
 func (i *ItemRepo) GetByOrderId(orderId int) ([]models.Item, error) {
 	items := []models.Item{}
 	item := &models.Item{}
 
 	sql := "select * from items where order_id = $1"
 	rows, err := i.store.db.Query(sql, orderId)
+	defer rows.Close()
 	if err != nil {
 		return nil, err
 	}
@@ -58,7 +62,7 @@ func (i *ItemRepo) GetByOrderId(orderId int) ([]models.Item, error) {
 			&item.OrderId,
 		)
 
-		if err != nil{
+		if err != nil {
 			return nil, err
 		}
 		items = append(items, *item)

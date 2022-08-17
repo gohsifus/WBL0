@@ -86,7 +86,7 @@ func GetRandOrder() Order {
 	}
 }
 
-//GetRandomString Вернет случйную строку заданной длины
+//GetRandomString Вернет случйную строку заданной длины из символов unicode 40-79
 func GetRandomString(len int, seed int64) string {
 	rand.Seed(seed)
 
@@ -98,7 +98,7 @@ func GetRandomString(len int, seed int64) string {
 	return resultStr.String()
 }
 
-//GetRandDate вернет случайную дату
+//GetRandDate вернет случайную дату в диапазоне 2000-2010г.
 func GetRandDate() time.Time {
 	rand.Seed(time.Now().UnixNano())
 	m := rand.Intn(120)

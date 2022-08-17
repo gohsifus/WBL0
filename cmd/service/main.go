@@ -7,7 +7,6 @@ import (
 )
 
 func main() {
-
 	wg := &sync.WaitGroup{}
 
 	//Загружаем конфигурации
@@ -31,7 +30,7 @@ func main() {
 		}
 	}()
 
-	//Получаем данные из nats
+	//Подписываемся на канал и получаем данные из nats
 	data, _ := app.Nats.GetDataFromChannel("orders")
 	for v := range data {
 		//Запись в бд

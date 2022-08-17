@@ -2,11 +2,12 @@ package store
 
 import "natTest/pkg/models"
 
-//Тут будут все методы для работы с бд с сущностью delivery
+//DeliveryRepo структура для работы с сущностью delivery из бд
 type DeliveryRepo struct {
 	store *Store
 }
 
+//Create создаст запись в бд
 func (d *DeliveryRepo) Create(m *models.Delivery) (*models.Delivery, error) {
 	sql := "insert into deliveries (name, phone, zip, city, address, region, email) values($1, $2, $3, $4, $5, $6, $7) RETURNING id"
 	err := d.store.db.QueryRow(sql, m.Name, m.Phone, m.Zip, m.City, m.Address, m.Region, m.Email).Scan(&m.Id)
@@ -18,6 +19,7 @@ func (d *DeliveryRepo) Create(m *models.Delivery) (*models.Delivery, error) {
 	return m, nil
 }
 
+//GetById вернет запись по id
 func (d *DeliveryRepo) GetById(id int) (*models.Delivery, error) {
 	delivery := &models.Delivery{}
 
@@ -40,7 +42,7 @@ func (d *DeliveryRepo) GetById(id int) (*models.Delivery, error) {
 			&delivery.Email,
 		)
 
-		if err != nil{
+		if err != nil {
 			return nil, err
 		}
 	}

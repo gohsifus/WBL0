@@ -39,6 +39,7 @@ func New(configs *Config) (*Service, error) {
 	}, nil
 }
 
+//Start запустит сервис
 func (s *Service) Start() error {
 	s.Logger.Info("Запуск сервиса")
 

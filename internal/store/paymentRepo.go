@@ -2,12 +2,12 @@ package store
 
 import "natTest/pkg/models"
 
-//Тут методы для работы с бд сущности payment
-
+//PaymentRepo структура для работы с сущностью delivery из бд
 type PaymentRepo struct {
 	store *Store
 }
 
+//Create создаст запись в бд
 func (p *PaymentRepo) Create(m *models.Payment) (*models.Payment, error) {
 	sql := "insert into payments (transaction, request_id, currency, provider, amount, payment_dt, bank, delivery_cost, goods_total, custom_fee) values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING id"
 	err := p.store.db.QueryRow(
@@ -31,6 +31,7 @@ func (p *PaymentRepo) Create(m *models.Payment) (*models.Payment, error) {
 	return m, nil
 }
 
+//GetById вернет запись по id
 func (p *PaymentRepo) GetById(id int) (*models.Payment, error) {
 	payment := &models.Payment{}
 

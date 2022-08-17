@@ -2,6 +2,7 @@
     margin: 0;
     padding: 0;
 }
+
 html,
 body,
 .container {
@@ -9,56 +10,69 @@ body,
     height: 100%;
     color: #dfdfe7;
 }
+
 /*ordersTable*/
-.ordersTable{
+.ordersTable {
     width: 100%;
     min-height: 100%;
 }
-.ordersTable th{
+
+.ordersTable th {
     border-right: solid black 3px;
     border-bottom: solid black 2px;
     background-color: #191938;
 }
-.ordersTable td{
+
+.ordersTable td {
     border-bottom: solid black 2px;
     padding: 5px;
     background-color: #494966;
 }
+
 /*deliveryTable*/
-.deliveryTable{
+.deliveryTable {
     width: 100%;
     border: solid black 2px;
 }
-.deliveryTable th{
+
+.deliveryTable th {
     border: solid black 1px;
 }
-.deliveryTable td{
+
+.deliveryTable td {
     border: solid black 1px;
 }
+
 /*paymentTable*/
-.paymentTable{
+.paymentTable {
     width: 100%;
     border: solid black 2px;
 }
-.paymentTable th{
+
+.paymentTable th {
     border: solid black 1px;
 }
-.paymentTable td{
+
+.paymentTable td {
     border: solid black 1px;
 }
+
 /*itemtemTable*/
-.itemTable{
+.itemTable {
     width: 100%;
     border: solid black 2px;
 }
-.itemTable th{
+
+.itemTable th {
     border: solid black 1px;
 }
-.itemTable td{
+
+.itemTable td {
     border: solid black 1px;
 }
+
 /*orderNotFound*/
-.orderNotFound{
+.orderNotFound {
     position: absolute;
     width: 40%;
     height: 20%;

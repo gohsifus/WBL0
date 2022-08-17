@@ -23,7 +23,7 @@ func New(config *Config, logger *logrus.Logger, cache cache.Cache) *APIServer {
 		config: config,
 		logger: logger,
 		router: mux.NewRouter(),
-		cache: cache,
+		cache:  cache,
 	}
 }
 
@@ -39,6 +39,7 @@ func (s *APIServer) Start() error {
 	return nil
 }
 
+//configureRouter Назначает функции обработчики на url
 func (s *APIServer) configureRouter() {
 	s.router.HandleFunc("/", s.handleIndex())
 	s.router.HandleFunc("/hello", s.handleHello())
@@ -52,6 +53,7 @@ func (s *APIServer) handleHello() http.HandlerFunc {
 	}
 }
 
+//handleIndex обработчик главной страницы
 func (s *APIServer) handleIndex() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		files := []string{
@@ -62,12 +64,12 @@ func (s *APIServer) handleIndex() http.HandlerFunc {
 
 		temp, err := template.ParseFiles(files...)
 		if err != nil {
-			s.logger.Info(err)
+			s.logger.Error(err)
 		}
 
 		dataForPage := &models.Order{}
 		id, err := strconv.Atoi(r.FormValue("id"))
-		if err == nil{
+		if err == nil {
 			*dataForPage = s.cache.GetById(id)
 		} else {
 			dataForPage = nil
