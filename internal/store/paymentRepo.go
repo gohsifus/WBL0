@@ -4,11 +4,11 @@ import "natTest/pkg/models"
 
 //Тут методы для работы с бд сущности payment
 
-type PaymentRepo struct{
+type PaymentRepo struct {
 	store *Store
 }
 
-func (p *PaymentRepo) Create(m *models.Payment) (*models.Payment, error){
+func (p *PaymentRepo) Create(m *models.Payment) (*models.Payment, error) {
 	sql := "insert into payments (transaction, request_id, currency, provider, amount, payment_dt, bank, delivery_cost, goods_total, custom_fee) values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING id"
 	err := p.store.db.QueryRow(
 		sql,
@@ -22,11 +22,43 @@ func (p *PaymentRepo) Create(m *models.Payment) (*models.Payment, error){
 		m.DeliveryCost,
 		m.GoodsTotal,
 		m.CustomFee,
-		).Scan(&m.Id)
+	).Scan(&m.Id)
 
-	if err != nil{
+	if err != nil {
 		return nil, err
 	}
 
 	return m, nil
+}
+
+func (p *PaymentRepo) GetById(id int) (*models.Payment, error) {
+	payment := &models.Payment{}
+
+	sql := "select * from payments where id = $1"
+	rows, err := p.store.db.Query(sql, id)
+	defer rows.Close()
+	if err != nil {
+		return nil, err
+	}
+
+	for rows.Next() {
+		err := rows.Scan(
+			&payment.Id,
+			&payment.Transaction,
+			&payment.RequestId,
+			&payment.Currency,
+			&payment.Provider,
+			&payment.Amount,
+			&payment.PaymentDt,
+			&payment.Bank,
+			&payment.DeliveryCost,
+			&payment.GoodsTotal,
+			&payment.CustomFee,
+		)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return payment, nil
 }

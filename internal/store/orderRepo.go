@@ -51,3 +51,59 @@ func (o *OrderRepo) Create(m *models.Order) (*models.Order, error) {
 
 	return m, nil
 }
+
+func (o *OrderRepo) GetList() ([]models.Order, error){
+	orders := []models.Order{}
+	order := models.Order{
+		Payment: &models.Payment{},
+		Delivery: &models.Delivery{},
+	}
+
+	sql := "select * from orders"
+
+	rows, err := o.store.db.Query(sql)
+	defer rows.Close()
+	if err != nil{
+		return nil, err
+	}
+
+	for rows.Next(){
+		err := rows.Scan(
+			&order.Id,
+			&order.OrderUid,
+			&order.TrackNumber,
+			&order.Entry,
+			&order.Payment.Id,
+			&order.Delivery.Id,
+			&order.Locale,
+			&order.InternalSignature,
+			&order.CustomerId,
+			&order.DeliveryService,
+			&order.ShardKey,
+			&order.SmId,
+			&order.DateCreated,
+			&order.OofShard,
+		)
+
+		if err != nil{
+			return nil, err
+		}
+
+		//Получаем платежи
+		if order.Payment, err = o.store.GetPaymentRepo().GetById(order.Payment.Id); err != nil{
+			return nil, err
+		}
+		//Получаем доставку
+		if order.Delivery, err = o.store.GetDeliveryRepo().GetById(order.Delivery.Id); err != nil{
+			return nil, err
+		}
+		//Получаем позиции(items)
+		if order.Items, err = o.store.GetItemRepo().GetByOrderId(order.Id); err != nil{
+			return nil, err
+		}
+
+		orders = append(orders, order)
+	}
+
+	return orders, nil
+}

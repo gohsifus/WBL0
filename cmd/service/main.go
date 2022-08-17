@@ -7,6 +7,7 @@ import (
 )
 
 func main() {
+
 	wg := &sync.WaitGroup{}
 
 	//Загружаем конфигурации
@@ -22,6 +23,7 @@ func main() {
 	//Запускаем сервис
 	wg.Add(1)
 	go func() {
+		//Во время запуска также восстанавливается кэш
 		err := app.Start()
 		if err != nil {
 			wg.Done()
@@ -34,9 +36,12 @@ func main() {
 	for v := range data {
 		//Запись в бд
 		err := app.Store.PutOrderToStore(&v)
-		if err != nil{
+		if err != nil {
 			app.Logger.Error(err)
 		}
+
+		//Запись в кэш
+		app.Cache = app.Cache.AddToCache(v)
 	}
 
 	wg.Wait()
