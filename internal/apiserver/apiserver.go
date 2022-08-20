@@ -1,3 +1,4 @@
+// Package apiserver http Сервер отображающий данные из кеша
 package apiserver
 
 import (
@@ -6,7 +7,6 @@ import (
 	"github.com/sirupsen/logrus"
 	"html/template"
 	"natTest/internal/cache"
-	"natTest/pkg/models"
 	"net/http"
 	"strconv"
 )
@@ -16,6 +16,7 @@ type APIServer struct {
 	logger *logrus.Logger
 	router *mux.Router
 	cache  cache.Cache
+	templateCache *template.Template
 }
 
 func New(config *Config, logger *logrus.Logger, cache cache.Cache) *APIServer {
@@ -56,26 +57,31 @@ func (s *APIServer) handleHello() http.HandlerFunc {
 //handleIndex обработчик главной страницы
 func (s *APIServer) handleIndex() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		files := []string{
-			"./web/html/index.html",
-			"./web/html/templates/header.html",
-			"./web/html/templates/footer.html",
+
+		if s.templateCache == nil {
+			files := []string{
+				"./web/html/index.html",
+				"./web/html/templates/header.html",
+				"./web/html/templates/footer.html",
+			}
+
+			temp, err := template.ParseFiles(files...)
+			if err != nil {
+				s.logger.Error(err)
+			}
+
+			s.templateCache = temp
 		}
 
-		temp, err := template.ParseFiles(files...)
-		if err != nil {
-			s.logger.Error(err)
-		}
-
-		dataForPage := &models.Order{}
-		id, err := strconv.Atoi(r.FormValue("id"))
+		var dataForPage interface{}
+		id, err := strconv.Atoi(r.URL.Query().Get("id"))
 		if err == nil {
-			*dataForPage = s.cache.GetById(id)
+			dataForPage = s.cache.GetById(id)
 		} else {
 			dataForPage = nil
 		}
 
-		err = temp.Execute(w, dataForPage)
+		err = s.templateCache.Execute(w, dataForPage)
 		if err != nil {
 			s.logger.Error(err)
 		}
