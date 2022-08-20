@@ -3,45 +3,54 @@ package natsSubscriber
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/go-playground/validator"
 	"github.com/nats-io/stan.go"
+	"github.com/sirupsen/logrus"
 	"natTest/pkg/models"
-	"sync"
 )
 
-type NatsSubscriber struct{
-	conn stan.Conn
+//NatsSubscriber описывает подключение к nats
+type NatsSubscriber struct {
 	config *Config
+	conn   stan.Conn
+	logger *logrus.Logger
+	validator *validator.Validate
 }
 
 //New Произведет подключение к nats и вернет структуру с подключением
-func New(configs *Config) (*NatsSubscriber, error){
+func New(configs *Config, logger *logrus.Logger) (*NatsSubscriber, error) {
 	conn, err := stan.Connect(configs.ClusterId, configs.ClientId)
-	if err != nil{
+	if err != nil {
 		return nil, err
 	}
-	//logger.Info("Подключение к NATS")
 
 	return &NatsSubscriber{
-		conn: conn,
+		conn:   conn,
 		config: configs,
+		logger: logger,
+		validator: validator.New(),
 	}, nil
 }
 
-func (n *NatsSubscriber) GetDataFromChannel() error{
-	_, err := n.conn.Subscribe("orders", func(m *stan.Msg) {
-		o := models.Order{}
-		json.Unmarshal(m.Data, &o)
-		fmt.Printf("%+v\n", o)
-		//fmt.Printf("Received a message: %s\n", string(m.Data))
-	})
-	if err != nil{
-		return err
+//GetDataFromChannel подпишется на канал и будет возвращать данные из него
+func (n *NatsSubscriber) GetDataFromChannel(channelName string) (<-chan models.Order, error) {
+	out := make(chan models.Order)
+
+	_, err := n.conn.Subscribe(channelName, func(m *stan.Msg) {
+		recOrder := models.Order{}
+		err := json.Unmarshal(m.Data, &recOrder)
+		err = n.validator.Struct(recOrder)
+		if err != nil {
+			//Игнорируем некорректные данные
+			n.logger.Info("ignore bad data")
+		} else {
+			out <- recOrder
+		}
+	}, stan.DurableName("durableId"), stan.StartWithLastReceived())
+
+	if err != nil {
+		return nil, fmt.Errorf("ошибка оформления подписки на канал %s: %s", channelName, err)
 	}
 
-	wg := &sync.WaitGroup{}
-	wg.Add(1)
-	wg.Wait()
-
-	return nil
+	return out, nil
 }
-

@@ -17,9 +17,9 @@ func GetSeed() func() int64 {
 }
 
 //GetRandDelivery Вернет структуру типа delivery инициализированную случайными значениями
-func GetRandDelivery() Delivery {
+func GetRandDelivery() *Delivery {
 	seed := GetSeed()
-	return Delivery{
+	return &Delivery{
 		Name:    GetRandomString(6, seed()),
 		Phone:   GetRandomString(6, seed()),
 		Zip:     GetRandomString(6, seed()),
@@ -31,9 +31,9 @@ func GetRandDelivery() Delivery {
 }
 
 //GetRandPayment Вернет структуру типа payment инициализированную случайными значениями
-func GetRandPayment() Payment {
+func GetRandPayment() *Payment {
 	seed := GetSeed()
-	return Payment{
+	return &Payment{
 		Transaction:  GetRandomString(6, seed()),
 		RequestId:    GetRandomString(6, seed()),
 		Currency:     GetRandomString(6, seed()),
@@ -86,7 +86,7 @@ func GetRandOrder() Order {
 	}
 }
 
-//GetRandomString Вернет случйную строку заданной длины
+//GetRandomString Вернет случйную строку заданной длины из символов unicode 40-79
 func GetRandomString(len int, seed int64) string {
 	rand.Seed(seed)
 
@@ -98,7 +98,7 @@ func GetRandomString(len int, seed int64) string {
 	return resultStr.String()
 }
 
-//GetRandDate вернет случайную дату
+//GetRandDate вернет случайную дату в диапазоне 2000-2010г.
 func GetRandDate() time.Time {
 	rand.Seed(time.Now().UnixNano())
 	m := rand.Intn(120)

@@ -1,9 +1,9 @@
 package store
 
-type Config struct{
+type Config struct {
 	DatabaseUrl string `json:"database_url"`
 }
 
-func NewConfig() *Config{
+func NewConfig() *Config {
 	return &Config{}
 }

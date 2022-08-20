@@ -11,6 +11,6 @@ hello:
 	echo "hello"
 
 test:
-	go test -race -timeout 30s ./...
+	go test -cover -count=1 -race -timeout 30s ./...
 
 .DEFAULT_GOAL := hello

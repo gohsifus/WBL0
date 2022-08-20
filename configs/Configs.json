@@ -1,0 +1,14 @@
+{
+  "apiServerConfig": {
+    "bind_addr": ":8080"
+  },
+  "natsConfig": {
+    "cluster_id": "test-cluster",
+    "client_id": "test-sub",
+    "channel_name": "orders"
+  },
+  "storeConfig": {
+    "database_url": "user=testuser password=qawsed345rf dbname=dbForL0 sslmode=disable"
+  },
+  "log_level": "debug"
+}

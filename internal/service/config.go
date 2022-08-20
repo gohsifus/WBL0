@@ -11,19 +11,19 @@ import (
 
 //Config конфигурации приложения
 type Config struct {
-	apiServerConfig *apiserver.Config
-	natsConfig      *natsSubscriber.Config
-	storeConfig     *store.Config
-	logLevel        string
+	ApiServerConfig *apiserver.Config
+	NatsConfig      *natsSubscriber.Config
+	StoreConfig     *store.Config
+	LogLevel        string `json:"log_level"`
 }
 
 //NewConfig вернет конфигурацию заполненную значениями по умолчанию
 func NewConfig() *Config {
 	return &Config{
-		apiServerConfig: apiserver.NewConfig(),
-		natsConfig:      natsSubscriber.NewConfig(),
-		storeConfig:     store.NewConfig(),
-		logLevel:        "debug",
+		ApiServerConfig: apiserver.NewConfig(),
+		NatsConfig:      natsSubscriber.NewConfig(),
+		StoreConfig:     store.NewConfig(),
+		LogLevel:        "debug",
 	}
 }
 

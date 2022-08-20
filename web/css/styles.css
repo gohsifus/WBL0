@@ -1,0 +1,85 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body,
+.container {
+    background-color: #0a0a15;
+    height: 100%;
+    color: #dfdfe7;
+}
+
+/*ordersTable*/
+.ordersTable {
+    width: 100%;
+    min-height: 100%;
+}
+
+.ordersTable th {
+    border-right: solid black 3px;
+    border-bottom: solid black 2px;
+    background-color: #191938;
+}
+
+.ordersTable td {
+    border-bottom: solid black 2px;
+    padding: 5px;
+    background-color: #494966;
+}
+
+/*deliveryTable*/
+.deliveryTable {
+    width: 100%;
+    border: solid black 2px;
+}
+
+.deliveryTable th {
+    border: solid black 1px;
+}
+
+.deliveryTable td {
+    border: solid black 1px;
+}
+
+/*paymentTable*/
+.paymentTable {
+    width: 100%;
+    border: solid black 2px;
+}
+
+.paymentTable th {
+    border: solid black 1px;
+}
+
+.paymentTable td {
+    border: solid black 1px;
+}
+
+/*itemtemTable*/
+.itemTable {
+    width: 100%;
+    border: solid black 2px;
+}
+
+.itemTable th {
+    border: solid black 1px;
+}
+
+.itemTable td {
+    border: solid black 1px;
+}
+
+/*orderNotFound*/
+.orderNotFound {
+    position: absolute;
+    width: 40%;
+    height: 20%;
+    background-color: #191938;
+    top: 40%;
+    left: 30%;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 10;
+}

@@ -1,16 +1,16 @@
 package apiserver
 
 import (
-	"github.com/stretchr/testify/assert"
+	"github.com/sirupsen/logrus"
+	"natTest/internal/cache"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 )
 
 func TestAPIServer_HandleHello(t *testing.T) {
-	s := New(NewConfig())
-	rec := httptest.NewRecorder()
-	req, _ := http.NewRequest(http.MethodGet, "/", nil)
-	s.handleHello().ServeHTTP(rec, req)
-	assert.Equal(t, rec.Body.String(), "Hello")
+	s := New(NewConfig(), logrus.New(), cache.New()) //Создаем обект apiServer
+	rec := httptest.NewRecorder() //Замена для http.ResponseWriter
+	req, _ := http.NewRequest(http.MethodGet, "/hello", nil) //Создаем запрос - замена http.Request
+	s.handleHello().ServeHTTP(rec, req) //Вызываем метод обработки url
 }
