@@ -1,6 +1,7 @@
 package natsSubscriber
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"github.com/go-playground/validator"
@@ -38,8 +39,13 @@ func (n *NatsSubscriber) GetDataFromChannel(channelName string) (<-chan models.O
 
 	_, err := n.conn.Subscribe(channelName, func(m *stan.Msg) {
 		recOrder := models.Order{}
-		err := json.Unmarshal(m.Data, &recOrder)
+
+		decoder := json.NewDecoder(bytes.NewReader(m.Data))
+		decoder.DisallowUnknownFields() //Бракуем данные если в json лишние поля
+
+		err := decoder.Decode(&recOrder)
 		err = n.validator.Struct(recOrder)
+
 		if err != nil {
 			//Игнорируем некорректные данные
 			n.logger.Info("ignore bad data")
