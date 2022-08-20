@@ -42,6 +42,7 @@ func (p *PaymentRepo) GetById(id int) (*models.Payment, error) {
 		return nil, err
 	}
 
+	count := 0
 	for rows.Next() {
 		err := rows.Scan(
 			&payment.Id,
@@ -56,9 +57,15 @@ func (p *PaymentRepo) GetById(id int) (*models.Payment, error) {
 			&payment.GoodsTotal,
 			&payment.CustomFee,
 		)
+
+		count++
 		if err != nil {
 			return nil, err
 		}
+	}
+
+	if count == 0{
+		return nil, nil
 	}
 
 	return payment, nil

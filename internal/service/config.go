@@ -14,7 +14,7 @@ type Config struct {
 	ApiServerConfig *apiserver.Config
 	NatsConfig      *natsSubscriber.Config
 	StoreConfig     *store.Config
-	LogLevel        string
+	LogLevel        string `json:"log_level"`
 }
 
 //NewConfig вернет конфигурацию заполненную значениями по умолчанию

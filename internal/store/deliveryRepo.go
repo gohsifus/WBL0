@@ -30,6 +30,7 @@ func (d *DeliveryRepo) GetById(id int) (*models.Delivery, error) {
 		return nil, err
 	}
 
+	count := 0
 	for rows.Next() {
 		err := rows.Scan(
 			&delivery.Id,
@@ -42,9 +43,15 @@ func (d *DeliveryRepo) GetById(id int) (*models.Delivery, error) {
 			&delivery.Email,
 		)
 
+		count++
+
 		if err != nil {
 			return nil, err
 		}
+	}
+
+	if count == 0{
+		return nil, nil
 	}
 
 	return delivery, nil

@@ -3,6 +3,7 @@ package natsSubscriber
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/go-playground/validator"
 	"github.com/nats-io/stan.go"
 	"github.com/sirupsen/logrus"
 	"natTest/pkg/models"
@@ -13,6 +14,7 @@ type NatsSubscriber struct {
 	config *Config
 	conn   stan.Conn
 	logger *logrus.Logger
+	validator *validator.Validate
 }
 
 //New Произведет подключение к nats и вернет структуру с подключением
@@ -26,6 +28,7 @@ func New(configs *Config, logger *logrus.Logger) (*NatsSubscriber, error) {
 		conn:   conn,
 		config: configs,
 		logger: logger,
+		validator: validator.New(),
 	}, nil
 }
 
@@ -36,9 +39,10 @@ func (n *NatsSubscriber) GetDataFromChannel(channelName string) (<-chan models.O
 	_, err := n.conn.Subscribe(channelName, func(m *stan.Msg) {
 		recOrder := models.Order{}
 		err := json.Unmarshal(m.Data, &recOrder)
+		err = n.validator.Struct(recOrder)
 		if err != nil {
 			//Игнорируем некорректные данные
-			n.logger.Info("ignore:" + err.Error())
+			n.logger.Info("ignore bad data")
 		} else {
 			out <- recOrder
 		}

@@ -26,9 +26,13 @@ func getOriginalData() ([]byte, error) {
 }
 
 //getDataForPub Вернет данные для отправки в канал
-//Данные могут быть 3 типов: json с моделью из задания, json c такой же структурой и случайными данными и некорректные данные
+//Данные могут быть 4 типов:
+//	json с моделью из задания,
+//	json c такой же структурой и случайными данными,
+//	некорректные данные,
+//  json частично повторяющий структуру
 func getDataForPub() ([]byte, error) {
-	n := rand.Intn(3)
+	n := rand.Intn(4)
 	switch n {
 	case 0:
 		return json.Marshal(models.GetRandOrder())
@@ -36,6 +40,8 @@ func getDataForPub() ([]byte, error) {
 		return getOriginalData()
 	case 2:
 		return []byte("i am bad data"), nil
+	case 3:
+		return []byte(`{"track_number": "qweqwe", "entry": "asdasd"}`), nil
 	}
 
 	return []byte{}, errors.New("неожиданное поведение")

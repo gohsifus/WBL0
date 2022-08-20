@@ -1,12 +1,28 @@
 package store
 
 import (
+	"database/sql"
 	"natTest/pkg/models"
 )
 
 //OrderRepo структура для работы с сущностью order из бд
 type OrderRepo struct {
 	store *Store
+}
+
+//Вспомогательная функция возвращающая null для записи в бд если передается nil
+func getDeliveryId(d *models.Delivery) interface{}{
+	if d == nil{
+		return sql.NullInt32{}
+	}
+	return d.Id
+}
+
+func getPaymentId(p *models.Payment) interface{}{
+	if p == nil{
+		return sql.NullInt32{}
+	}
+	return p.Id
 }
 
 //Create создаст запись в бд
@@ -33,8 +49,8 @@ func (o *OrderRepo) Create(m *models.Order) (*models.Order, error) {
 		m.OrderUid,
 		m.TrackNumber,
 		m.Entry,
-		m.Delivery.Id,
-		m.Payment.Id,
+		getDeliveryId(m.Delivery),
+		getPaymentId(m.Payment),
 		m.Locale,
 		m.InternalSignature,
 		m.CustomerId,
@@ -68,6 +84,7 @@ func (o *OrderRepo) GetList() ([]models.Order, error) {
 		return nil, err
 	}
 
+	count := 0
 	for rows.Next() {
 		err := rows.Scan(
 			&order.Id,
@@ -85,6 +102,8 @@ func (o *OrderRepo) GetList() ([]models.Order, error) {
 			&order.DateCreated,
 			&order.OofShard,
 		)
+
+		count++
 
 		if err != nil {
 			return nil, err
@@ -104,6 +123,10 @@ func (o *OrderRepo) GetList() ([]models.Order, error) {
 		}
 
 		orders = append(orders, order)
+	}
+
+	if count == 0{
+		return nil, nil
 	}
 
 	return orders, nil
